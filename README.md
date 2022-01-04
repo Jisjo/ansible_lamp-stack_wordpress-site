@@ -74,3 +74,4 @@ changed: [172.31.39.44] => (item=mariadb)
 PLAY RECAP *********************************************************************************************************************
 172.31.39.44               : ok=21   changed=18   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
+![image](https://github.com/Jisjo/ansible_lamp-stack_wordpress-site/blob/main/Screenshot-1.png)
