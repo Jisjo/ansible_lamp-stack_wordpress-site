@@ -1,0 +1,62 @@
+---
+######################### installation of Mariadb server ###################
+
+- name: "Installing Mariadb and python mysql module"
+  yum:
+    name:
+      - mariadb-server
+      - MySQL-python
+    state: present
+
+- name: "Starting and Enabling MariaDB server"
+  service:
+    name: mariadb
+    state: restarted
+    enabled: true
+
+############################## Mysql secure instalation ##############################################
+
+- name: "setup mysql root password"
+  ignore_errors: true
+  mysql_user:
+    login_user: "root"
+    login_password: ""
+    user: "root"
+    password: "{{ mysql_root_pass }}"
+    host_all: yes
+
+- name: "creating my.cnf file"
+  template:
+    src: "my.cnf.j2"
+    dest: "/root/.my.cnf"
+    owner: "root"
+    group: "root"
+
+- name: "remove anonymous user"
+  ignore_errors: true
+  mysql_user:
+    user: ""
+    state: absent
+    host_all: yes
+
+- name: "Removing Test User"
+  mysql_db:
+    name: "test"
+    state: absent
+
+
+##########################################################
+
+- name: "creating wp db  {{ wp_db_name }}"
+  mysql_db:
+    name: "{{ wp_db_name }}"
+    state: present
+
+- name: "creating DB user {{ wp_db_user }}"
+  mysql_user:
+    name: "{{ wp_db_user }}"
+    password: "{{ wp_db_pass }}"
+    state: present
+    priv: '{{ wp_db_name }}.*:ALL'
+
+    

@@ -1,0 +1,30 @@
+---
+- name: "Install LAMP Stack for WP site"
+  hosts: wp
+  become: true
+
+  vars_files:
+    - variables.vars
+
+  tasks:
+
+    - include_tasks: apache_setup.yml
+    - include_tasks: mariadb_setup.yml
+
+
+    - name: "Post-Installation - CleanUp"
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/tmp/wordpress.tar.gz"
+        - "/tmp/wordpress"
+      
+    - name: "Post-Installation - Restarting"
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: true
+      with_items:
+        - httpd
+        - mariadb

@@ -1,0 +1,54 @@
+---
+- name: "Installing apache and php Packages"
+  yum:
+    name:
+      - httpd
+    state: present
+
+- name: "Install latest php from AMAZON repo"
+  shell: "amazon-linux-extras install php7.4 -y"
+  
+
+- name: "setup vhost for wp site"
+  template:
+    src: "virtualhost.conf.j2"
+    dest: "/etc/httpd/conf.d/{{ domain_name }}.conf"
+    owner: "{{ httpd_user }}"
+    group: "{{ httpd_group }}"
+
+- name: "Creating Doc Root"
+  file:
+    path: /var/www/html/{{ domain_name }}
+    owner: "{{ httpd_user }}"
+    group: "{{ httpd_group }}"
+    state: directory
+
+- name: "Download wp data"
+  unarchive:
+    src: "{{ wp_url }}"
+    dest: /tmp/
+    remote_src: yes
+
+- name: "Copy wp files to Doc Root"
+  copy:
+    src: "/tmp/wordpress/"
+    dest: "/var/www/html/{{ domain_name }}/"
+    remote_src: yes
+    owner: "{{ httpd_user }}"
+    group: "{{ httpd_group }}"
+
+- name: "Wordpress - Creating wp-config.php"
+  template:
+    src: "wp-config.php.j2"
+    dest: "/var/www/html/{{ domain_name }}/wp-config.php"
+    owner: "{{ httpd_user }}"
+    group: "{{ httpd_group }}"
+
+      
+
+- name: "Start and enable services"
+  service: 
+    name: httpd
+    state: restarted
+    enabled: true
+
