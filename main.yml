@@ -12,7 +12,7 @@
     - include_tasks: mariadb_setup.yml
 
 
-    - name: "Post-Installation - CleanUp"
+    - name: "Post-Installation - Clean up tmp files"
       file:
         path: "{{ item }}"
         state: absent
