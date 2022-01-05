@@ -1,3 +1,4 @@
+---
 - name: "Download wp data"
   unarchive:
     src: "{{ wp_url }}"
