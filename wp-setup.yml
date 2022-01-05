@@ -3,7 +3,6 @@
     src: "{{ wp_url }}"
     dest: /tmp/
     remote_src: yes
-  register: wp_download_data
   tags:
     - httpd
     - wp
