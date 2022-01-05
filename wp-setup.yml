@@ -1,0 +1,30 @@
+- name: "Download wp data"
+  unarchive:
+    src: "{{ wp_url }}"
+    dest: /tmp/
+    remote_src: yes
+  register: wp_download_data
+  tags:
+    - httpd
+    - wp
+
+- name: "Copy wp files to Doc Root"
+  copy:
+    src: "/tmp/wordpress/"
+    dest: "/var/www/html/{{ domain_name }}/"
+    remote_src: yes
+    owner: "{{ httpd_user }}"
+    group: "{{ httpd_group }}"
+  tags:
+    - httpd
+    - wp
+
+- name: "Wordpress - Creating wp-config.php"
+  template:
+    src: "wp-config.php.j2"
+    dest: "/var/www/html/{{ domain_name }}/wp-config.php"
+    owner: "{{ httpd_user }}"
+    group: "{{ httpd_group }}"
+  tags:
+    - httpd
+    - wp
