@@ -10,6 +10,7 @@
 
     - include_tasks: apache_setup.yml
     - include_tasks: mariadb_setup.yml
+    - include_tasks: wp-setup.yml
 
 
     - name: "Post-Installation - Clean up tmp files"
@@ -28,3 +29,9 @@
       with_items:
         - httpd
         - mariadb
+  handlers:
+    - name: "httpd-restart"
+      service:
+        name: httpd
+        state: restarted
+        enabled: true
